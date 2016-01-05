@@ -8,11 +8,20 @@ require "dotenv" ; Dotenv.load
 
 Gmail.new(ENV["GMAIL_USERNAME"], ENV['GMAIL_PASSWORD']) do |gmail|
 
- emailCount = gmail.inbox.count
- emails = gmail.inbox.emails
- #message includes from, to and subject
- firstEmailMessage = gmail.inbox.emails.first.message
- #body includes message
- firstEmailBody = gmail.inbox.emails.first.body
+  emailCount = gmail.inbox.count
+  emails = gmail.inbox.emails
+  #message includes from, to and subject
+  message = emails.first.message
+  #body includes message
+  body = emails.first.body
 
+  wwc_emails = []
+
+  emails.each do |email|
+    if email.subject == "New members in Women Who Code Boston"
+      wwc_emails << email
+    end
+  end
+
+  puts wwc_emails
 end
