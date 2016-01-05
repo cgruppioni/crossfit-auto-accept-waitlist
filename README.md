@@ -1,0 +1,1 @@
+Email yourself all of your pocket saves from the last week
