@@ -28,6 +28,7 @@ gem 'pry-remote'
 
 gem 'ruby-gmail'
 
+gem 'pocket-ruby'
 
 
 group :development, :test do
