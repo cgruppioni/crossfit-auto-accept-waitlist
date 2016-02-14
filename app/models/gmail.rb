@@ -22,7 +22,8 @@ class Wodify
 
       wodify_emails(emails).first.body.to_s.scan( /<([^>]*)>/).each do |section|
         if section.first.include? 'a id=3D"wt4"'
-          puts section.first.gsub("=\n", "")
+           link = section.first.gsub("=\n", "")
+           puts link.sub!(/.*?(?="http)/im, "")
         end
       end
 
