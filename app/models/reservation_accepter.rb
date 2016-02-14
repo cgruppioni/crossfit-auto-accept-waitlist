@@ -8,15 +8,21 @@ require "dotenv" ; Dotenv.load
 require 'pry'
 require 'net/http'
 
-class Wodify
+class ReservationAccepter
   def initialize
+    accept_reservations
+  end
+
+  def accept_reservations
     Gmail.new(ENV["GMAIL_USERNAME"], ENV['GMAIL_PASSWORD']) do |gmail|
       emails = gmail.inbox.emails
 
       wodify_emails = get_emails(emails)
-      link = get_link(wodify_emails)
 
-      Net::HTTP.get(URI(link))
+      wodify_emails.each do |email|
+        link = get_link(wodify_emails)
+          Net::HTTP.get(URI(link))
+      end
     end
   end
 
@@ -25,13 +31,16 @@ class Wodify
   def get_link(emails)
     link = ""
 
-    emails.first.body.to_s.scan( /<([^>]*)>/).each do |section|
-      if section.first.include? 'a id=3D"wt4"'
-         #get rid of new lines
-         #get rid of the substring before the link starts
-         #get rid of extra '/"''s
-         link = section.first.gsub("=\n", "").sub!(/.*?(?="http)/im, "").tr('\"', "")
+    emails.each do |email|
+      email.body.to_s.scan( /<([^>]*)>/).each do |section|
+        if section.first.include? 'a id=3D"wt4"'
+           #get rid of new lines
+           #get rid of the substring before the link starts
+           #get rid of extra '/"''s
+           link = section.first.gsub("=\n", "").sub!(/.*?(?="http)/im, "").tr('\"', "")
+        end
       end
+      email.archive!
     end
 
     link
@@ -49,5 +58,3 @@ class Wodify
     wodify_emails
   end
 end
-
-Wodify.new

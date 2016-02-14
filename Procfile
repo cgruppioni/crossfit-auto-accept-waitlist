@@ -1,1 +1,1 @@
-web: ruby app/models/wodify.rb
+web: ruby app/models/gmail.rb
