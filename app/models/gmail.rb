@@ -5,23 +5,41 @@
 require 'gmail'
 require 'pry-rails'
 require "dotenv" ; Dotenv.load
+require 'pry'
+require 'nokogiri'
 
-Gmail.new(ENV["GMAIL_USERNAME"], ENV['GMAIL_PASSWORD']) do |gmail|
+class Wodify
+  def initialize
+    Gmail.new(ENV["GMAIL_USERNAME"], ENV['GMAIL_PASSWORD']) do |gmail|
 
-  emailCount = gmail.inbox.count
-  emails = gmail.inbox.emails
-  #message includes from, to and subject
-  message = emails.first.message
-  #body includes message
-  body = emails.first.body
+      emails = gmail.inbox.emails
+      #message includes from, to and subject
+      # message = emails.first.message
+      #body includes message
+      # body = emails.first.body
 
-  wwc_emails = []
+      # wodify_emails(emails).each do |email|
 
-  emails.each do |email|
-    if email.subject == "New members in Women Who Code Boston"
-      wwc_emails << email
+      wodify_emails(emails).first.body.to_s.scan( /<([^>]*)>/).each do |section|
+        if section.first.include? 'a id=3D"wt4"'
+          puts section.first.gsub("=\n", "")
+        end
+      end
+
     end
   end
 
-  puts wwc_emails
+  def wodify_emails(emails)
+    wodify_emails = []
+
+    emails.each do |email|
+      if email.subject.include? "class is open for reservation"
+        wodify_emails << email
+      end
+    end
+
+    wodify_emails
+  end
 end
+
+Wodify.new
