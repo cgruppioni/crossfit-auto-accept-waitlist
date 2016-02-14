@@ -1,1 +1,1 @@
-web: ruby wodify.rb
+web: ruby app/models/wodify.rb
